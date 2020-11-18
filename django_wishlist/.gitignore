@@ -1,0 +1,6 @@
+*.pyc
+__pycache__
+wishlist/db.sqlite3
+venv
+.DS_STORE
+*.vscode
