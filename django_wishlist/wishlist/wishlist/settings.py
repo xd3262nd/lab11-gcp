@@ -23,10 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'kg=pe13kg#4yi4negrp$+sfg$8*ydc-+)90w$)xhmyy@-(=x@v'
 
+if not os.getenv('GAE_INSTANCE'):
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+    DEBUG = True
+else:
+    DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -88,6 +91,12 @@ DATABASES = {
 
 if not os.getenv('GAE_INSTANCE'):
     DATABASES['default']['HOST'] = '127.0.0.1'
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.sqlite3',
+    #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #     }
+    # }
 
 
 # Password validation
@@ -126,8 +135,28 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
-
-MEDIA_URL = '/media/'
+# Specify a location to copy static files to when running python manage.py collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, 'www', 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+if os.getenv('GAE_INSTANCE'):
+    
+    # Static and media files at app engine
+    GS_STATIC_FILE_BUCKET = 'travel-wishlist-django.appspot.com'
+    STATIC_URL = f'https://storage.cloud.google.com/{GS_STATIC_FILE_BUCKET}/static/'
+
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_BUCKET_NAME = 'wishlist-user-images'
+
+    MEDIA_URL = f'https://storage.cloud.google.com/{GS_BUCKET_NAME}/media/'
+
+    from google.oauth2 import service_account
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file('travel_credentials.json')
+else:
+    # Developing locally
+    STATIC_URL = '/static/'
+    # Media URL for user-created media - becomes part of the URL when images are displayed
+    MEDIA_URL = '/media/'

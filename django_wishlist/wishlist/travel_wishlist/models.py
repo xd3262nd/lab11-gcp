@@ -3,6 +3,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
 
+
+class CatFact(models.Model):
+    fact = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.fact
+
 class Places(models.Model):
     user = models.ForeignKey('auth.User', null=False, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -11,7 +18,7 @@ class Places(models.Model):
     date_visited = models.DateField(blank=True, null=True)
     photo = models.ImageField(upload_to='user_images/', blank=True, null=True)
 
-    def save(self, *args, **kwarg):
+    def save(self, *args, **kwargs):
         # get reference to previous version of this Place
         old_place = Places.objects.filter(pk=self.pk).first()
         if old_place and old_place.photo:

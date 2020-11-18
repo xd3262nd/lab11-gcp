@@ -4,3 +4,4 @@ pytz==2020.1
 sqlparse==0.4.1
 psycopg2==2.8.4
 gunicorn==20.04
+Pillow==7.0.0

@@ -4,3 +4,5 @@ wishlist/db.sqlite3
 venv
 .DS_STORE
 *.vscode
+cloud_sql_proxy
+travel_credentials.json

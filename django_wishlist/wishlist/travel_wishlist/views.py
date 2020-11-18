@@ -16,7 +16,8 @@ def place_list(request):
     """
     if request.method == 'POST':
         form = NewPlaceForm(request.POST) # this is to create a form object based on what is being sent from the server
-        place = form.save()  # Create a new Place from the form or creating a model object from the form
+        place = form.save(commit=False)  # Create a new Place from the form or creating a model object from the form
+        place.user = request.user # associate the place with the current logged-in user
         if form.is_valid():  # Checks against DB Constraints, for example, are required fields present?
             place.save()  # Saves places to the database
             return redirect('place_list')  # redirects to GET view with name place_list - which is this same view or reload the homepage
